@@ -47,6 +47,17 @@
 			};
 		});
 	});
+
+	kernel-custom = pkgs.linuxKernel.customPackage {
+		version = "6.2.0-rc2";
+		configfile = ./.config;
+		src = pkgs.fetchFromGitHub {
+			owner = "alberand";
+			repo = "linux";
+			rev = "4520bab7903344ea2ec9543ccc88469b72df016f";
+			sha256 = "";
+		};
+	};
 in
 {
 	imports = [
@@ -62,8 +73,8 @@ in
 		crashDump.enable = true;
 
 		# Set my custom kernel
-		# kernelPackages = kernel-custom;
-		kernelPackages = pkgs.linuxPackages_6_1;
+		kernelPackages = kernel-custom;
+		# kernelPackages = pkgs.linuxPackages_6_1;
 	};
 
 	# Auto-login with empty password
