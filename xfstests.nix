@@ -1,14 +1,10 @@
 { pkgs, ... }:
 {
-	fileSystems."/mnt/test" = {
-		device = "/dev/disk/by-label/test";
-		fsType = "xfs";
-	};
-
-	fileSystems."/mnt/scratch" = {
-		device = "/dev/disk/by-label/scratch";
-		fsType = "xfs";
-	};
+	systemd.tmpfiles.rules = [
+		"d /mnt 1777 root root"
+		"d /mnt/test 1777 root root"
+		"d /mnt/scratch 1777 root root"
+	];
 
 	# Setup envirionment
 	environment.variables.HOST_OPTIONS = "${pkgs.xfstests-env}/xfstests-config";
@@ -50,6 +46,8 @@
 		wants = [ "network.target" "network-online.target" "local-fs.target" ];
 		wantedBy = [ "multi-user.target" ];
                 postStop = ''
+			# Allow *.ko to expand to empty string
+			shopt -s nullglob
 			for module in ${pkgs.xfstests-env}/modules/*.ko; do
 				${pkgs.kmod}/bin/rmmod $module;
 			done;
@@ -57,6 +55,8 @@
 			# ${pkgs.systemd}/bin/systemctl poweroff;
 		'';
 		script = ''
+			# Allow *.ko to expand to empty string
+			shopt -s nullglob
 			for module in ${pkgs.xfstests-env}/modules/*.ko; do
 				${pkgs.kmod}/bin/insmod $module;
 			done;
