@@ -49,13 +49,13 @@
 	});
 
 	kernel-custom = pkgs.linuxKernel.customPackage {
-		version = "6.2.0-rc2";
+		version = "6.3.0-rc1";
 		configfile = ./.config;
 		src = pkgs.fetchFromGitHub {
 			owner = "alberand";
 			repo = "linux";
 			rev = "4520bab7903344ea2ec9543ccc88469b72df016f";
-			sha256 = "";
+			sha256 = "sha256-isnmGFMUguIqkhDmnRe2s7jxxmeD1nd7lELwzS6kRJM=";
 		};
 	};
 in
